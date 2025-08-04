@@ -1,0 +1,26 @@
+# train_grpo.py
+import os
+from datasets import load_dataset
+from trl import GRPOConfig, GRPOTrainer
+
+dataset = load_dataset("trl-lib/tldr", split="train")
+
+# Define the reward function, which rewards completions that are close to 20 characters
+def reward_len(completions, **kwargs):
+    return [-abs(20 - len(completion)) for completion in completions]
+
+training_args = GRPOConfig(
+    output_dir="Qwen2-0.5B-GRPO",
+    bf16=True,
+    use_vllm=True,
+    max_steps=10,
+    vllm_server_host=os.environ["VLLM_NODE"].replace("ip-", "").replace("-", ".")
+)
+
+trainer = GRPOTrainer(
+    model="Qwen/Qwen2-0.5B-Instruct",
+    reward_funcs=reward_len,
+    args=training_args,
+    train_dataset=dataset,
+)
+trainer.train()
