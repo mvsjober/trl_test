@@ -205,3 +205,8 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+#
+.deepspeed_env
+Qwen2-0.5B-GRPO
+logs
