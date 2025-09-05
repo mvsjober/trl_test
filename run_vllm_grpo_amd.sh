@@ -6,6 +6,7 @@
 #SBATCH --mem=480G
 #SBATCH --partition=dev-g
 #SBATCH --time=00:30:00
+#SBATCH --exclusive
 #SBATCH --gpus-per-node=8
 #SBATCH --account=project_462000007
 
@@ -15,46 +16,37 @@ mkdir -p $HF_HOME
 # export HF_TOKEN_PATH=~/.cache/huggingface/token
 # mkdir -p logs
 
-# CSC PyTorch
+# AMD PyTorch
 module purge
-module use /appl/local/csc/modulefiles/
-module load pytorch/2.7
-SINGULARITY_EXEC="singularity_wrapper exec"
+SIF=/appl/local/containers/sif-images/lumi-pytorch-rocm-6.2.4-python-3.12-pytorch-v2.7.0.sif
+#SIF=/appl/local/containers/sif-images/lumi-pytorch-rocm-6.2.4-python-3.12-pytorch-v2.7.1.sif
+export SINGULARITY_BIND="/pfs,/scratch,/projappl,/project,/flash,/appl"
 
-# Created venv like this:
-# # load above modules...
+# Created venv with trl like this:
+# singularity shell $SIF
 # python3 -m venv --system-site-packages $VENV_NAME
 # source $VENV_NAME/bin/activate
 
-# pip install --upgrade "trl[vllm]" "transformers<4.54.0" accelerate
-source venv-trl-0.20.0/bin/activate
+# pip install --upgrade trl "transformers<4.54.0"
+VENV_ACTIVATE="venv-amd-trl-0.20.0/bin/activate"
 
-# export VLLM_USE_TRITON_FLASH_ATTN=0
-# export PYTORCH_ROCM_ARCH=gfx90a
 
-# git clone https://github.com/vllm-project/vllm -b v0.10.1.1 vllm-v0.10.1.1
-# cd vllm-v0.10.1.1
+#export NCCL_DEBUG=INFO
+export NCCL_DEBUG=TRACE
+#export NCCL_DEBUG_SUBSYS=ALL
 
-# git clone https://github.com/vllm-project/vllm vllm-git
-# cd vllm-git
+export NCCL_SOCKET_IFNAME=hsn
+export NCCL_NET_GDR_LEVEL=PHB
+export NCCL_ENABLE_DMABUF_SUPPORT=1
 
-# pip install setuptools_scm
-# python3 setup.py install
-# pip install --upgrade accelerate
-# pip install --upgrade --no-deps "trl[vllm]"
-# pip install "tokenizers>=0.22.0,<=0.23.0"
-#source venv-trl/bin/activate
-
-trl env
-
-export NCCL_DEBUG=INFO
-
-# None of these had any effect
 # export NCCL_CUMEM_ENABLE=0
 # export NCCL_SOCKET_FAMILY=AF_INET
 # export NCCL_P2P_LEVEL=NVL
 # export NCCL_P2P_DISABLE=1
-#export NCCL_IB_DISABLE=1
+
+export VLLM_USE_TRITON_FLASH_ATTN=0
+
+singularity exec $SIF bash -c "source $VENV_ACTIVATE && trl env"
 
 export OMP_NUM_THREADS=7
 NUM_NODES=$((SLURM_NNODES - 1))
@@ -75,16 +67,17 @@ MODEL="Qwen/Qwen2-0.5B-Instruct"
 # start vllm server
 # TODO parameterize model
 (set -x
- srun --nodes=1 --ntasks=1 --nodelist=$VLLM_NODE --label \
-      trl vllm-serve --model=$MODEL --tensor_parallel_size=1 --data_parallel_size=1 --enforce-eager=True &
+srun --nodes=1 --ntasks=1 --nodelist=$VLLM_NODE --label singularity exec $SIF \
+     bash -c "source $VENV_ACTIVATE && trl vllm-serve --model=$MODEL --tensor_parallel_size=1 --data_parallel_size=1 --enforce-eager=True" &
 )
 VLLM_PID=$!
 
 # start GRPO training
 
-CMD="accelerate launch --config-file=./accelerate_config.yaml --num_processes=$NUM_PROCESSES --num_machines=$NUM_NODES --machine_rank=\$SLURM_NODEID --main_process_ip=$MAIN_PROCESS_IP --rdzv_backend=c10d train_vllm_grpo.py"
+CMD="source $VENV_ACTIVATE && accelerate launch --config-file=./accelerate_config.yaml --num_processes=$NUM_PROCESSES --num_machines=$NUM_NODES --machine_rank=\$SLURM_NODEID --main_process_ip=$MAIN_PROCESS_IP --rdzv_backend=c10d train_vllm_grpo.py"
 (set -x
- srun --nodes=$NUM_NODES --ntasks=$NUM_NODES --nodelist="$TRAIN_NODES" bash -c "$CMD"
+srun --nodes=$NUM_NODES --ntasks=$NUM_NODES --nodelist="$TRAIN_NODES" singularity exec $SIF \
+     bash -c "$CMD"
 )
 
 kill $VLLM_PID
