@@ -210,3 +210,5 @@ __marimo__/
 .deepspeed_env
 Qwen2-0.5B-GRPO
 logs
+/venv*
+slurm*out

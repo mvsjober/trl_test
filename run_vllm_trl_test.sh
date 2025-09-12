@@ -2,7 +2,7 @@
 #SBATCH --job-name=test-vllm-trl-grpo
 #SBATCH --cpus-per-task=56
 #SBATCH --ntasks-per-node=1
-#SBATCH --nodes=3
+#SBATCH --nodes=2
 #SBATCH --mem=480G
 #SBATCH --partition=dev-g
 #SBATCH --time=00:30:00
@@ -49,11 +49,8 @@ export VLLM_USE_TRITON_FLASH_ATTN=0
 singularity exec $SIF bash -c "source $VENV_ACTIVATE && trl env"
 
 export OMP_NUM_THREADS=7
-NUM_NODES=$((SLURM_NNODES - 1))
-NUM_PROCESSES=$(expr $NUM_NODES \* $SLURM_GPUS_PER_NODE)
-MAIN_PROCESS_IP=$(hostname -i)
+
 NODELIST=($(scontrol show hostnames $SLURM_JOB_NODELIST))
-TRAIN_NODES="${NODELIST[@]:0:$((SLURM_NNODES - 1))}"
 export VLLM_NODE=${NODELIST[-1]}
 
 echo "VLLM_NODE=$VLLM_NODE"
@@ -66,14 +63,13 @@ MODEL="Qwen/Qwen2-0.5B-Instruct"
 srun --nodes=1 --ntasks=1 --nodelist=$VLLM_NODE --label singularity exec $SIF \
      bash -c "source $VENV_ACTIVATE && trl vllm-serve --model=$MODEL --tensor_parallel_size=1 --data_parallel_size=1 --enforce-eager=True" &
 )
-VLLM_PID=$!
 
-# start GRPO training
+# wait until vLLM is running properly
+sleep 10
+while ! curl $VLLM_NODE:8000 >/dev/null 2>&1
+do
+    sleep 10
+done
 
-CMD="source $VENV_ACTIVATE && accelerate launch --config-file=./accelerate_config.yaml --num_processes=$NUM_PROCESSES --num_machines=$NUM_NODES --machine_rank=\$SLURM_NODEID --main_process_ip=$MAIN_PROCESS_IP --rdzv_backend=c10d train_vllm_grpo.py"
-(set -x
-srun --nodes=$NUM_NODES --ntasks=$NUM_NODES --nodelist="$TRAIN_NODES" singularity exec $SIF \
-     bash -c "$CMD"
-)
-
-kill $VLLM_PID
+# simple connect back to vllm using trl.extras.vllm_client.VLLMClient
+singularity exec $SIF bash -c "source $VENV_ACTIVATE && python3 trl_vllm_connect.py"
