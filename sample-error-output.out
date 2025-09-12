@@ -1,0 +1,216 @@
+The following modules were not unloaded:
+  (Use "module --force purge" to unload all):
+
+  1) ModuleLabel/label   2) lumi-tools/24.05   3) init-lumi/0.2
+
+The following sticky modules could not be reloaded:
+
+  1) lumi-tools
+INFO 09-12 16:01:36 [__init__.py:241] Automatically detected platform rocm.
+
+Copy-paste the following information when reporting an issue:
+
+- Platform: Linux-5.14.21-150500.55.49_13.0.56-cray_shasta_c-x86_64-with-glibc2.31
+- Python version: 3.12.11
+- TRL version: 0.23.0
+- PyTorch version: 2.7.1+rocm6.2.4
+- accelerator(s): AMD Instinct MI250X, AMD Instinct MI250X, AMD Instinct MI250X, AMD Instinct MI250X, AMD Instinct MI250X, AMD Instinct MI250X, AMD Instinct MI250X, AMD Instinct MI250X
+- Transformers version: 4.56.1
+- Accelerate version: 1.10.1
+- Accelerate config: not found
+- Datasets version: 4.0.0
+- HF Hub version: 0.34.4
+- bitsandbytes version: 0.43.3.dev0
+- DeepSpeed version: 0.17.4
+- Diffusers version: not installed
+- Liger-Kernel version: not installed
+- LLM-Blender version: not installed
+- OpenAI version: 1.101.0
+- PEFT version: 0.17.1
+- vLLM version: 0.10.1+rocm624
+
+VLLM_NODE=nid005006
+TRAIN_NODES=
++ srun --nodes=1 --ntasks=1 --nodelist=nid005006 --label singularity exec /appl/local/containers/sif-images/lumi-pytorch-rocm-6.2.4-python-3.12-pytorch-v2.7.1.sif bash -c 'source venv-amd-2.7.1-trl/bin/activate && trl vllm-serve --model=Qwen/Qwen2-0.5B-Instruct --tensor_parallel_size=1 --data_parallel_size=1 --enforce-eager=True'
+0: INFO 09-12 16:03:33 [__init__.py:241] Automatically detected platform rocm.
+0: INFO:     Started server process [37199]
+0: INFO:     Waiting for application startup.
+0: INFO 09-12 16:03:48 [__init__.py:241] Automatically detected platform rocm.
+0: INFO 09-12 16:03:49 [utils.py:326] non-default args: {'model': 'Qwen/Qwen2-0.5B-Instruct', 'disable_log_stats': True, 'enforce_eager': True, 'worker_extension_cls': 'trl.scripts.vllm_serve.WeightSyncWorkerExtension', 'model_impl': 'vllm'}
+0: INFO 09-12 16:04:05 [__init__.py:711] Resolved architecture: Qwen2ForCausalLM
+0: `torch_dtype` is deprecated! Use `dtype` instead!
+0: INFO 09-12 16:04:05 [__init__.py:1750] Using max model len 32768
+0: INFO 09-12 16:04:06 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=8192.
+0: INFO 09-12 16:04:06 [__init__.py:3565] Cudagraph is disabled under eager mode
+0: INFO 09-12 16:04:18 [__init__.py:241] Automatically detected platform rocm.
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:19 [core.py:636] Waiting for init message from front-end.
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:19 [core.py:74] Initializing a V1 LLM engine (v0.10.1) with config: model='Qwen/Qwen2-0.5B-Instruct', speculative_config=None, tokenizer='Qwen/Qwen2-0.5B-Instruct', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, override_neuron_config={}, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, disable_custom_all_reduce=True, quantization=None, enforce_eager=True, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=Qwen/Qwen2-0.5B-Instruct, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output
+0: _proc=True, pooler_config=None, compilation_config={"level":0,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":null,"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":0,"use_cudagraph":true,"cudagraph_num_of_warmups":0,"cudagraph_capture_sizes":[],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":0,"local_cache_dir":null}
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:23 [worker_base.py:587] Injected <class 'trl.scripts.vllm_serve.WeightSyncWorkerExtension'> into <class 'vllm.v1.worker.gpu_worker.Worker'> for extended collective_rpc calls ['close_communicator', 'init_communicator', 'update_named_param']
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:23 [parallel_state.py:1134] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+0: [1;36m(EngineCore_0 pid=37523)[0;0m WARNING 09-12 16:04:25 [rocm.py:351] Model architecture 'Qwen2ForCausalLM' is partially supported by ROCm: Sliding window attention (SWA) is not yet supported in Triton flash attention. For half-precision SWA support, please use CK flash attention by setting `VLLM_USE_TRITON_FLASH_ATTN=0`
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:25 [gpu_model_runner.py:1953] Starting to load model Qwen/Qwen2-0.5B-Instruct...
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:25 [gpu_model_runner.py:1985] Loading model from scratch...
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:25 [rocm.py:245] Using Triton Attention backend on V1 engine.
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:25 [triton_attn.py:257] Using vllm unified attention for TritonAttentionImpl
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:26 [weight_utils.py:296] Using model weights format ['*.safetensors']
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:28 [weight_utils.py:312] Time spent downloading weights for Qwen/Qwen2-0.5B-Instruct: 2.460337 seconds
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:28 [weight_utils.py:349] No model.safetensors.index.json found in remote.
+0: [1;36m(EngineCore_0 pid=37523)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+0: [1;36m(EngineCore_0 pid=37523)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:01<00:00,  1.06s/it]
+0: [1;36m(EngineCore_0 pid=37523)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:01<00:00,  1.06s/it]
+0: [1;36m(EngineCore_0 pid=37523)[0;0m 
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:29 [default_loader.py:262] Loading weights took 1.11 seconds
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:30 [gpu_model_runner.py:2007] Model loading took 0.9980 GiB and 4.239480 seconds
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:42 [gpu_worker.py:276] Available KV cache memory: 54.14 GiB
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:42 [kv_cache_utils.py:849] GPU KV cache size: 4,731,104 tokens
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:42 [kv_cache_utils.py:853] Maximum concurrency for 32,768 tokens per request: 144.38x
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:42 [core.py:214] init engine (profile, create kv cache, warmup model) took 12.30 seconds
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:04:43 [__init__.py:3565] Cudagraph is disabled under eager mode
+0: INFO 09-12 16:04:43 [llm.py:298] Supported_tasks: ['generate']
+0: INFO:     Application startup complete.
+0: INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+0: INFO:     10.253.51.100:47716 - "GET / HTTP/1.1" 404 Not Found
+INFO 09-12 16:05:10 [__init__.py:241] Automatically detected platform rocm.
+0: INFO:     10.253.51.100:41676 - "GET /health/ HTTP/1.1" 200 OK
+0: Adding requests:   0%|          | 0/2 [00:00<?, ?it/s]Adding requests: 100%|██████████| 2/2 [00:00<00:00, 74.70it/s]
+0: [1;36m(EngineCore_0 pid=37523)[0;0m WARNING 09-12 16:05:10 [cudagraph_dispatcher.py:101] cudagraph dispatching keys are not initialized. No cudagraph will be used.
+0: Processed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts:  50%|█████     | 1/2 [00:12<00:12, 12.07s/it, est. speed input: 0.58 toks/s, output: 1.33 toks/s]Processed prompts: 100%|██████████| 2/2 [00:12<00:00, 12.07s/it, est. speed input: 0.91 toks/s, output: 2.65 toks/s]Processed prompts: 100%|██████████| 2/2 [00:12<00:00,  6.03s/it, est. speed input: 0.91 toks/s, output: 2.65 toks/s]
+0: INFO:     10.253.51.100:41684 - "POST /generate/ HTTP/1.1" 200 OK
+0: INFO:     10.253.51.100:59398 - "GET /get_world_size/ HTTP/1.1" 200 OK
+0: INFO:     10.253.51.100:59404 - "POST /init_communicator/ HTTP/1.1" 200 OK
+Trying to call connect to vLLM on nid005006
+Generated response {'completion_ids': [[1205, 10565, 498, 1588, 0, 358, 15726, 1513, 944, 1414, 421, 358, 1075, 432, 1588, 2987], [525, 498, 2058, 2163, 5267, 3872, 4297, 50117, 30, 3303, 358, 2058, 13675, 30, 3155, 498]], 'logprobs': [[-3.3007607460021973, -4.763415336608887, -0.2166520357131958, -2.7349634170532227, -2.5080552101135254, -3.048034429550171, -8.059024810791016, -4.049668312072754, -0.3239569664001465, -2.088183879852295, -3.464667797088623, -1.9798996448516846, -5.8924407958984375, -2.6618051528930664, -3.371985912322998, -6.2077202796936035], [-5.110795021057129, -0.10188461095094681, -4.0462493896484375, -2.7513697147369385, -0.9790958762168884, -3.92789363861084, -4.592573642730713, -1.688730239868164, -1.3594801425933838, -6.491410255432129, -0.04233818128705025, -1.4405494928359985, -1.8694193363189697, -1.330709457397461, -2.9960310459136963, -0.6505953073501587]]}
+INFO 09-12 16:05:51 [__init__.py:1418] Found nccl from library librccl.so.1
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:05:51 [__init__.py:1418] Found nccl from library librccl.so.1
+0: [1;36m(EngineCore_0 pid=37523)[0;0m INFO 09-12 16:05:51 [pynccl.py:70] vLLM is using nccl==2.22.3
+INFO 09-12 16:05:51 [pynccl.py:70] vLLM is using nccl==2.22.3
+0: 
+0: nid005006:37523:37523 [0] /opt/mybuild/build/hipify/src/misc/api_trace.cc:283 NCCL WARN [rocprofiler-sdk-rccl][37523] rocprofiler-register failed with error code 4 : Library's API is not supported
+0: nid005006:37523:37523 [0] NCCL INFO Kernel version: 5.14.21-150500.55.49_13.0.56-cray_shasta_c
+0: nid005006:37523:37523 [0] NCCL INFO Disabled GDRCopy equivalent memory allocation on gfx90a due to GPU architecture
+0: nid005006:37523:37523 [0] NCCL INFO NCCL_SOCKET_IFNAME set by environment to hsn0,hsn1,hsn2,hsn3
+0: nid005006:37523:37523 [0] NCCL INFO Bootstrap : Using hsn0:10.253.57.134<0>
+0: nid005006:37523:37523 [0] NCCL INFO ROCr version 1.14
+0: nid005006:37523:37523 [0] NCCL INFO Dmabuf feature disabled without NCCL_DMABUF_ENABLE=1
+0: nid005006:37523:37523 [0] NCCL INFO Kernel version: 5.14.21-150500.55.49_13.0.56-cray_shasta_c
+0: nid005006:37523:37523 [0] NCCL INFO RCCL version : 2.22.3-mydev:e72b592
+0: HIP version  : 6.2.41134-65d174c3e
+0: ROCm version : 6.2.4.0-139-98a50c5
+0: Hostname     : nid005006
+0: Librccl path : /opt/rocm-6.2.4/lib/librccl.so
+0: nid005006:37523:37523 [0] NCCL INFO NET/Plugin: Failed to find ncclNetPlugin_v8 symbol.
+0: nid005006:37523:37523 [0] NCCL INFO NET/Plugin: Loaded net plugin AWS Libfabric (v5)
+0: nid005006:37523:37523 [0] NCCL INFO NET/Plugin: Failed to find ncclCollNetPlugin_v8 symbol.
+0: nid005006:37523:37523 [0] NCCL INFO NET/Plugin: Failed to find ncclCollNetPlugin symbol (>= v5). ncclCollNetPlugin symbols v4 and lower are not supported.
+0: nid005006:37523:37523 [0] NCCL INFO NET/OFI Using aws-ofi-rccl 1.4.0
+0: nid005006:37523:37523 [0] NCCL INFO NET/OFI Setting FI_EFA_FORK_SAFE environment variable to 1
+0: nid005006:37523:37523 [0] NCCL INFO NET/OFI Selected Provider is cxi
+0: nid005006:37523:37523 [0] NCCL INFO Using network AWS Libfabric
+0: nid005006:37523:37523 [0] NCCL INFO [node_id = 5; gpu_id = 27578; unique_id = 1723197018839629932; location_id = 50688; bdf = 50688; domain = 0; partition = 0], 
+0: nid005006:37523:37523 [0] NCCL INFO [node_id = 9; gpu_id = 30477; unique_id = 3937000926707091827; location_id = 54784; bdf = 54784; domain = 0; partition = 0], 
+0: nid005006:37523:37523 [0] NCCL INFO [node_id = 10; gpu_id = 10324; unique_id = 8099239125814058318; location_id = 55552; bdf = 55552; domain = 0; partition = 0], 
+0: nid005006:37523:37523 [0] NCCL INFO [node_id = 6; gpu_id = 3292; unique_id = 9046598652268358280; location_id = 51456; bdf = 51456; domain = 0; partition = 0], 
+0: nid005006:37523:37523 [0] NCCL INFO [node_id = 4; gpu_id = 29312; unique_id = 10249345454295113287; location_id = 49408; bdf = 49408; domain = 0; partition = 0], 
+0: nid005006:37523:37523 [0] NCCL INFO [node_id = 11; gpu_id = 329; unique_id = 13827479570645693153; location_id = 56832; bdf = 56832; domain = 0; partition = 0], 
+0: nid005006:37523:37523 [0] NCCL INFO [node_id = 8; gpu_id = 7704; unique_id = 15338035526355123403; location_id = 53504; bdf = 53504; domain = 0; partition = 0], 
+0: nid005006:37523:37523 [0] NCCL INFO [node_id = 7; gpu_id = 26097; unique_id = 16475042664980184674; location_id = 52736; bdf = 52736; domain = 0; partition = 0], 
+0: nid005006:37523:37523 [0] NCCL INFO initialized internal alternative rsmi functionality
+0: nid005006:37523:37523 [0] NCCL INFO ncclCommInitRank comm 0x52740f20 rank 0 nranks 2 cudaDev 0 nvmlDev 0 busId c1000 commId 0x68c5a267ca98a868 - Init START
+0: nid005006:37523:37523 [0] NCCL INFO initialized internal alternative rsmi functionality
+0: nid005006:37523:37523 [0] NCCL INFO NCCL_NET_GDR_LEVEL set by environment to PHB
+0: nid005006:37523:37523 [0] NCCL INFO Setting affinity for GPU 0 to fefe0000,00000000
+0: nid005006:37523:37523 [0] NCCL INFO comm 0x52740f20 rank 0 nRanks 2 nNodes 2 localRanks 1 localRank 0 MNNVL 0
+0: nid005006:37523:37523 [0] NCCL INFO RCCL_MSCCL_ENABLE set by environment to 0.
+0: nid005006:37523:37523 [0] NCCL INFO Channel 00/04 :    0   1
+0: nid005006:37523:37523 [0] NCCL INFO Channel 01/04 :    0   1
+0: nid005006:37523:37523 [0] NCCL INFO Channel 02/04 :    0   1
+0: nid005006:37523:37523 [0] NCCL INFO Channel 03/04 :    0   1
+
+nid005005:91071:91071 [0] /opt/mybuild/build/hipify/src/misc/api_trace.cc:283 NCCL WARN [rocprofiler-sdk-rccl][91071] rocprofiler-register failed with error code 4 : Library's API is not supported
+nid005005:91071:91071 [0] NCCL INFO ROCr version 1.14
+nid005005:91071:91071 [0] NCCL INFO Dmabuf feature disabled without NCCL_DMABUF_ENABLE=1
+nid005005:91071:91071 [0] NCCL INFO Kernel version: 5.14.21-150500.55.49_13.0.56-cray_shasta_c
+nid005005:91071:91071 [0] NCCL INFO Disabled GDRCopy equivalent memory allocation on gfx90a due to GPU architecture
+nid005005:91071:91071 [0] NCCL INFO NCCL_SOCKET_IFNAME set by environment to hsn0,hsn1,hsn2,hsn3
+nid005005:91071:91071 [0] NCCL INFO Bootstrap : Using hsn0:10.253.52.148<0>
+nid005005:91071:91071 [0] NCCL INFO RCCL version : 2.22.3-mydev:e72b592
+HIP version  : 6.2.41134-65d174c3e
+ROCm version : 6.2.4.0-139-98a50c5
+Hostname     : nid005005
+Librccl path : /opt/rocm-6.2.4/lib/librccl.so
+nid005005:91071:91071 [0] NCCL INFO NET/Plugin: Failed to find ncclNetPlugin_v8 symbol.
+nid005005:91071:91071 [0] NCCL INFO NET/Plugin: Loaded net plugin AWS Libfabric (v5)
+nid005005:91071:91071 [0] NCCL INFO NET/Plugin: Failed to find ncclCollNetPlugin_v8 symbol.
+nid005005:91071:91071 [0] NCCL INFO NET/Plugin: Failed to find ncclCollNetPlugin symbol (>= v5). ncclCollNetPlugin symbols v4 and lower are not supported.
+nid005005:91071:91071 [0] NCCL INFO NET/OFI Using aws-ofi-rccl 1.4.0
+nid005005:91071:91071 [0] NCCL INFO NET/OFI Setting FI_EFA_FORK_SAFE environment variable to 1
+nid005005:91071:91071 [0] NCCL INFO NET/OFI Selected Provider is cxi
+nid005005:91071:91071 [0] NCCL INFO Using network AWS Libfabric
+nid005005:91071:91071 [0] NCCL INFO [node_id = 9; gpu_id = 30477; unique_id = 4678298172508712464; location_id = 54784; bdf = 54784; domain = 0; partition = 0], 
+nid005005:91071:91071 [0] NCCL INFO [node_id = 11; gpu_id = 329; unique_id = 8323249148855706344; location_id = 56832; bdf = 56832; domain = 0; partition = 0], 
+nid005005:91071:91071 [0] NCCL INFO [node_id = 5; gpu_id = 27578; unique_id = 8389445317889770581; location_id = 50688; bdf = 50688; domain = 0; partition = 0], 
+nid005005:91071:91071 [0] NCCL INFO [node_id = 4; gpu_id = 29312; unique_id = 11507667780624484615; location_id = 49408; bdf = 49408; domain = 0; partition = 0], 
+nid005005:91071:91071 [0] NCCL INFO [node_id = 6; gpu_id = 3292; unique_id = 12975694143226107653; location_id = 51456; bdf = 51456; domain = 0; partition = 0], 
+nid005005:91071:91071 [0] NCCL INFO [node_id = 10; gpu_id = 10324; unique_id = 14736248088277728363; location_id = 55552; bdf = 55552; domain = 0; partition = 0], 
+nid005005:91071:91071 [0] NCCL INFO [node_id = 8; gpu_id = 7704; unique_id = 15192327823896347140; location_id = 53504; bdf = 53504; domain = 0; partition = 0], 
+nid005005:91071:91071 [0] NCCL INFO [node_id = 7; gpu_id = 26097; unique_id = 15550484704659820414; location_id = 52736; bdf = 52736; domain = 0; partition = 0], 
+nid005005:91071:91071 [0] NCCL INFO initialized internal alternative rsmi functionality
+nid005005:91071:91071 [0] NCCL INFO ncclCommInitRank comm 0x2148da00 rank 1 nranks 2 cudaDev 0 nvmlDev 0 busId c1000 commId 0x68c5a267ca98a868 - Init START
+nid005005:91071:91071 [0] NCCL INFO initialized internal alternative rsmi functionality
+nid005005:91071:91071 [0] NCCL INFO NCCL_NET_GDR_LEVEL set by environment to PHB
+nid005005:91071:91071 [0] NCCL INFO Setting affinity for GPU 0 to fefe0000,00000000,fefe0000,00000000
+nid005005:91071:91071 [0] NCCL INFO comm 0x2148da00 rank 1 nRanks 2 nNodes 2 localRanks 1 localRank 0 MNNVL 0
+nid005005:91071:91071 [0] NCCL INFO RCCL_MSCCL_ENABLE set by environment to 0.
+nid005005:91071:91071 [0] NCCL INFO Trees [0] -1/-1/-1->1->0 [1] 0/-1/-1->1->-1 [2] -1/-1/-1->1->0 [3] 0/-1/-1->1->-1 comm 0x2148da00 nRanks 02 busId c1000
+nid005005:91071:91071 [0] NCCL INFO P2P Chunksize set to 131072
+
+nid005005:91071:91226 [0] create_nccl_ofi_component:823 NCCL WARN NET/OFI Couldn't open a fabric access domain. RC: -38, ERROR: Function not implemented
+nid005005:91071:91226 [0] NCCL INFO /opt/mybuild/build/hipify/src/transport/net_tmp.cc:684 -> 2
+nid005005:91071:91071 [0] NCCL INFO /opt/mybuild/build/hipify/src/transport/net_tmp.cc:266 -> 2
+nid005005:91071:91071 [0] NCCL INFO /opt/mybuild/build/hipify/src/transport.cc:46 -> 2
+nid005005:91071:91071 [0] NCCL INFO /opt/mybuild/build/hipify/src/transport.cc:148 -> 2
+nid005005:91071:91071 [0] NCCL INFO /opt/mybuild/build/hipify/src/transport/generic.cc:11 -> 2
+nid005005:91071:91071 [0] NCCL INFO /opt/mybuild/build/hipify/src/init.cc:1631 -> 2
+nid005005:91071:91071 [0] NCCL INFO /opt/mybuild/build/hipify/src/init.cc:1915 -> 2
+nid005005:91071:91071 [0] NCCL INFO /opt/mybuild/build/hipify/src/init.cc:2227 -> 2
+nid005005:91071:91071 [0] NCCL INFO /opt/mybuild/build/hipify/src/init.cc:2266 -> 2
+Traceback (most recent call last):
+  File "/pfs/lustrep4/scratch/project_462000007/mvsjober/trl_test/trl_vllm_connect.py", line 14, in <module>
+    client.init_communicator(device="cuda")
+  File "/pfs/lustrep4/scratch/project_462000007/mvsjober/trl_test/venv-amd-2.7.1-trl/lib/python3.12/site-packages/trl/extras/vllm_client.py", line 295, in init_communicator
+    self.pynccl_comm = PyNcclCommunicator(pg, device=device)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/pytorch/lib/python3.12/site-packages/vllm/distributed/device_communicators/pynccl.py", line 100, in __init__
+0: nid005006:37523:37523 [0] NCCL INFO Trees [0] 1/-1/-1->0->-1 [1] -1/-1/-1->0->1 [2] 1/-1/-1->0->-1 [3] -1/-1/-1->0->1 [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769] Invocation of collective_rpc method failed
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769] Traceback (most recent call last):
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]   File "/opt/miniconda3/envs/pytorch/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 766, in _handle_client_request
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]     result = method(*self._convert_msgspec_args(method, args))
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]   File "/opt/miniconda3/envs/pytorch/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 409, in collective_rpc
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]     return self.model_executor.collective_rpc(method, timeout, args,
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]   File "/opt/miniconda3/envs/pytorch/lib/python3.12/site-packages/vllm/executor/uniproc_executor.py", line 58, in collective_rpc
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]     answer = run_method(self.driver_worker, method, args, kwargs)
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]   File "/opt/miniconda3/envs/pytorch/lib/python3.12/site-packages/vllm/utils/__init__.py", line 3007, in run_method
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]     return func(*args, **kwargs)
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]            ^^^^^^^^^^^^^^^^^^^^^
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]   File "/pfs/lustrep4/scratch/project_462000007/mvsjober/trl_test/venv-amd-2.7.1-trl/lib/python3.12/site-packages/trl/scripts/vllm_serve.py", line 127, in init_communicator
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]     self.pynccl_comm = PyNcclCommunicator(pg, device=self.device)
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]   File "/opt/miniconda3/envs/pytorch/lib/python3.12/site-packages/vllm/distributed/device_communicators/pynccl.py", line 100, in __init__
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]     self.comm: ncclComm_t = self.nccl.ncclCommInitRank(
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]   File "/opt/miniconda3/envs/pytorch/lib/python3.12/site-packages/vllm/distributed/device_communicators/pynccl_wrapper.py", line 301, in ncclCommInitRank
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]     self.NCCL_CHECK(self._funcs["ncclCommInitRank"](ctypes.byref(comm),
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]   File "/opt/miniconda3/envs/pytorch/lib/python3.12/site-packages/vllm/distributed/device_communicators/pynccl_wrapper.py", line 272, in NCCL_CHECK
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769]     raise RuntimeError(f"NCCL error: {error_str}")
+0: [1;36m(EngineCore_0 pid=37523)[0;0m ERROR 09-12 16:05:51 [core.py:769] RuntimeError: NCCL error: unhandled system error (run with NCCL_DEBUG=INFO for details)
+    self.comm: ncclComm_t = self.nccl.ncclCommInitRank(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/pytorch/lib/python3.12/site-packages/vllm/distributed/device_communicators/pynccl_wrapper.py", line 301, in ncclCommInitRank
+    self.NCCL_CHECK(self._funcs["ncclCommInitRank"](ctypes.byref(comm),
+  File "/opt/miniconda3/envs/pytorch/lib/python3.12/site-packages/vllm/distributed/device_communicators/pynccl_wrapper.py", line 272, in NCCL_CHECK
+    raise RuntimeError(f"NCCL error: {error_str}")
+RuntimeError: NCCL error: unhandled system error (run with NCCL_DEBUG=INFO for details)
